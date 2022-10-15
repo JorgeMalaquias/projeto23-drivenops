@@ -1,13 +1,13 @@
 services:
 
   postgres_container:
-    image: postgres
+    image: postgres:13
     container_name: postgres_container
     restart: always
     ports:
-      - 5432:5432
+      - 6000:5432
     env_file:
-      - /back-end/.env
+      - back-end/.env
     volumes:
       - postgres:/var/lib/postgresql/data
   
@@ -17,6 +17,8 @@ services:
     restart: always
     ports:
       - 5000:5000
+    env_file:
+      - back-end/.env
     depends_on:
       - postgres_container
 
@@ -24,6 +26,8 @@ services:
     build: ./front-end
     container_name: react_app
     restart: always
+    env_file:
+      - front-end/.env
     volumes:
       - react_build:/var/www/html
 
