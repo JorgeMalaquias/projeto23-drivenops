@@ -1,0 +1,44 @@
+services:
+
+  postgres_container:
+    image: postgres
+    container_name: postgres_container
+    restart: always
+    ports:
+      - 5432:5432
+    env_file:
+      - /back-end/.env
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  
+  api_node:
+    build: ./back-end
+    container_name: api_node
+    restart: always
+    ports:
+      - 5000:5000
+    depends_on:
+      - postgres_container
+
+  react_app:
+    build: ./front-end
+    container_name: react_app
+    restart: always
+    volumes:
+      - react_build:/var/www/html
+
+  nginx_container:
+    build: ./nginx
+    container_name: nginx_container
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - react_build:/var/www/html
+    depends_on:
+      - postgres_container
+      - api_node
+      - react_app
+volumes:
+  react_build:
+  postgres:
